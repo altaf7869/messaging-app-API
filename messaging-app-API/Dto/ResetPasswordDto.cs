@@ -1,4 +1,4 @@
-﻿namespace LegalGen.Dto
+﻿namespace messaging_app_API.Dto
 {
     public class ResetPasswordDto
     {

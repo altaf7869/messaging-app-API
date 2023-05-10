@@ -1,11 +1,12 @@
-﻿using LegalGen.Models;
+﻿using messaging_app_API.UtilityServices;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using messaging_app_API.Models;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
 
-namespace LegalGen.UtilityServices
+namespace messaging_app_API.UtilityServices
 {
     public class EmailService : IEmailService
     {

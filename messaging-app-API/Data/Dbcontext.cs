@@ -1,7 +1,7 @@
-﻿using LegalGen.Models;
+﻿using messaging_app_API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace LegalGen.Data
+namespace messaging_app_API.Data
 {
     public class Dbcontext : DbContext
     {
@@ -11,11 +11,9 @@ namespace LegalGen.Data
         }
 
         public DbSet<User> Users { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-
-
-        { 
-        }
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{ 
+        //}
     }
 
 }

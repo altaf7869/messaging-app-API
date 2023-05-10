@@ -1,11 +1,14 @@
-using LegalGen.Data;
-using LegalGen.UtilityServices;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using messaging_app_API.Hubs;
+using messaging_app_API.Services;
+using messaging_app_API.UtilityServices;
+using messaging_app_API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<Dbcontext>(option => option.UseInMemoryDatabase("UserDb"));
 //builder.Services.AddDbContext<Dbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ContactsApiConnectionString")));
 
-
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(option =>
 {
@@ -32,6 +35,7 @@ builder.Services.AddSwaggerGen(option =>
     });
     option.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(option =>
 {
@@ -44,6 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
     };
 });
+
 builder.Services.AddCors(option =>
 {
     option.AddPolicy("mypolicy", builder =>
@@ -53,7 +58,12 @@ builder.Services.AddCors(option =>
 });
 
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<ChatService>();
+
+builder.Services.AddSignalR();
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -66,8 +76,8 @@ app.UseHttpsRedirection();
 app.UseCors("mypolicy");
 app.UseAuthorization();
 
-app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();

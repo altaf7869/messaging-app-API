@@ -1,4 +1,4 @@
-﻿namespace LegalGen.Models
+﻿namespace messaging_app_API.Models
 {
     public class EmailModel
     {

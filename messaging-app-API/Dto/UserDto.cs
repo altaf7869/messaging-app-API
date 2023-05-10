@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LegalGen.Dto
+namespace messaging_app_API.Dto
 {
     public class UserDto
     {

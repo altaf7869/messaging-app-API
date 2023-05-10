@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace LegalGen.Helper
+namespace messaging_app_API.Helper
 {
     public class PasswordHasher
     {

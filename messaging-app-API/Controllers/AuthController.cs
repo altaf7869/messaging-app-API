@@ -1,11 +1,9 @@
-﻿using LegalGen.Data;
-using LegalGen.Dto;
-using LegalGen.Helper;
-using LegalGen.Models;
-using LegalGen.UtilityServices;
+﻿
+using messaging_app_API.Data;
 using messaging_app_API.Dto;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using messaging_app_API.Helper;
+using messaging_app_API.Models;
+using messaging_app_API.UtilityServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,7 +30,7 @@ namespace LegalGen.Controllers
         }
 
         //getUser 
-        [HttpGet]
+        [HttpGet("getAllUser")]
         public async Task<IActionResult> GetAllUser()
         {
             var users = await _dbcontext.Users.ToListAsync();
@@ -40,7 +38,7 @@ namespace LegalGen.Controllers
         }
 
         //Api user Registration
-        [HttpPost("register")]
+        [HttpPost("register")]   
         public async Task<IActionResult> Register([FromBody] UserDto request)
         {
             var existingUser = await _dbcontext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);

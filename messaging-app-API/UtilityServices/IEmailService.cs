@@ -1,6 +1,6 @@
-﻿using LegalGen.Models;
+﻿using messaging_app_API.Models;
 
-namespace LegalGen.UtilityServices
+namespace messaging_app_API.UtilityServices
 {
     public interface IEmailService
     {

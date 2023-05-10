@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace LegalGen.Models
+namespace messaging_app_API.Models
 {
     public class User
     {
