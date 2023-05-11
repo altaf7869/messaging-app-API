@@ -3,6 +3,7 @@ using messaging_app_API.Data;
 using messaging_app_API.Dto;
 using messaging_app_API.Helper;
 using messaging_app_API.Models;
+using messaging_app_API.Services;
 using messaging_app_API.UtilityServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,12 +22,14 @@ namespace LegalGen.Controllers
         private readonly Dbcontext _dbcontext;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-
-        public AuthController(Dbcontext dbcontext ,IConfiguration configuration,IEmailService emailService)
+        private readonly ChatService _chatService;
+        public AuthController(Dbcontext dbcontext ,IConfiguration configuration,IEmailService emailService, ChatService chatService)
         {
             _dbcontext = dbcontext;
             _configuration = configuration;
             _emailService = emailService;
+            _chatService = chatService;
+
         }
 
         //getUser 
@@ -47,13 +50,16 @@ namespace LegalGen.Controllers
                 // Return a response indicating that the email is already registered
                 return Conflict("Email is already registered.");
             }
+            
             var user = new User
             {
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
+              
             
             };
             // Save the user to the database
+            _chatService.AddUserToList(request.Name);
             await _dbcontext.Users.AddAsync(user);
             await _dbcontext.SaveChangesAsync();
            
@@ -108,55 +114,55 @@ namespace LegalGen.Controllers
 
 
         //reset  password and email 
-        [HttpPost("send-reset-email/{email}")]
-        public async Task<IActionResult> SendEmail(string email)
-        {
-            var user = await _dbcontext.Users.FirstOrDefaultAsync(a => a.Email == email);
-            if (user is null)
-            {
-                return NotFound(new
-                {
-                    StatusCode = 404,
-                    Message = "Email Dosen't Exist"
-                });
-            }
-            var tokenBytes = RandomNumberGenerator.GetBytes(64);
-            Console.WriteLine(tokenBytes);
-            var emailToken = Convert.ToBase64String(tokenBytes);
-            user.ResetPasswordToken = emailToken;
-            user.ResetPasswordExpiry = DateTime.Now.AddMinutes(15);
-            string from = _configuration["EmailSettings:From"];
-            var emailModel = new EmailModel(email, "Reset Password!", EmailBody.EmailStringBody(email, emailToken));
-            _emailService.SendEmail(emailModel);
-            _dbcontext.Entry(user).State = EntityState.Modified;
-            await _dbcontext.SaveChangesAsync();
-            return Ok(new
-            {
-                email = user.Email,
-                resetToken = user.ResetPasswordToken,
-                StatusCode = 200,
-                Message = "Email Sent!"
-            });
-        }
+        //[HttpPost("send-reset-email/{email}")]
+        //public async Task<IActionResult> SendEmail(string email)
+        //{
+        //    var user = await _dbcontext.Users.FirstOrDefaultAsync(a => a.Email == email);
+        //    if (user is null)
+        //    {
+        //        return NotFound(new
+        //        {
+        //            StatusCode = 404,
+        //            Message = "Email Dosen't Exist"
+        //        });
+        //    }
+        //    var tokenBytes = RandomNumberGenerator.GetBytes(64);
+        //    Console.WriteLine(tokenBytes);
+        //    var emailToken = Convert.ToBase64String(tokenBytes);
+        //    user.ResetPasswordToken = emailToken;
+        //    user.ResetPasswordExpiry = DateTime.Now.AddMinutes(15);
+        //    string from = _configuration["EmailSettings:From"];
+        //    var emailModel = new EmailModel(email, "Reset Password!", EmailBody.EmailStringBody(email, emailToken));
+        //    _emailService.SendEmail(emailModel);
+        //    _dbcontext.Entry(user).State = EntityState.Modified;
+        //    await _dbcontext.SaveChangesAsync();
+        //    return Ok(new
+        //    {
+        //        email = user.Email,
+        //        resetToken = user.ResetPasswordToken,
+        //        StatusCode = 200,
+        //        Message = "Email Sent!"
+        //    });
+        //}
 
         //resetPassword 
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetpassword)
-        {
-            var newToken = resetpassword.EmailToken.Replace(" ", "+");
-            var user = await _dbcontext.Users.FirstOrDefaultAsync(x => x.Email == resetpassword.Email);
-            if (user == null) { return NotFound("User Not Found"); }
-            var tokenCode = user.ResetPasswordToken;
-            DateTime emailTokenExpiry = user.ResetPasswordExpiry;
-            if (tokenCode != resetpassword.EmailToken || emailTokenExpiry < DateTime.Now)
-            {
-                return BadRequest("Invalid reset link");
-            };
-            user.Password = PasswordHasher.HashPassword(resetpassword.NewPassword);
-            _dbcontext.Entry(user).State = EntityState.Modified;
-            await _dbcontext.SaveChangesAsync();
-            return Ok("Password reset sucessfully");
-        }
+        //[HttpPost("reset-password")]
+        //public async Task<IActionResult> ResetPassword(ResetPasswordDto resetpassword)
+        //{
+        //    var newToken = resetpassword.EmailToken.Replace(" ", "+");
+        //    var user = await _dbcontext.Users.FirstOrDefaultAsync(x => x.Email == resetpassword.Email);
+        //    if (user == null) { return NotFound("User Not Found"); }
+        //    var tokenCode = user.ResetPasswordToken;
+        //    DateTime emailTokenExpiry = user.ResetPasswordExpiry;
+        //    if (tokenCode != resetpassword.EmailToken || emailTokenExpiry < DateTime.Now)
+        //    {
+        //        return BadRequest("Invalid reset link");
+        //    };
+        //    user.Password = PasswordHasher.HashPassword(resetpassword.NewPassword);
+        //    _dbcontext.Entry(user).State = EntityState.Modified;
+        //    await _dbcontext.SaveChangesAsync();
+        //    return Ok("Password reset sucessfully");
+        //}
 
     }
 }

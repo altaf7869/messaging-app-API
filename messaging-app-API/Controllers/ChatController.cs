@@ -1,4 +1,5 @@
 ﻿
+using messaging_app_API.Dto;
 using messaging_app_API.Dtos;
 using messaging_app_API.Services;
 using Microsoft.AspNetCore.Http;
@@ -12,21 +13,19 @@ namespace messaging_app_API.Controllers
     public class ChatController : ControllerBase
     {
         private readonly ChatService _chatService;
-        public ChatController(ChatService chatService) 
+        public ChatController(ChatService chatService)
         {
             _chatService = chatService;
         }
-
         [HttpPost("register-user")]
-        public IActionResult RegistrationUser(UserDto model)
+        public IActionResult RegisterUser(ChatDto model)
         {
             if (_chatService.AddUserToList(model.Name))
             {
-                //202 ststus code
+                // 204 status code
                 return NoContent();
             }
-            return BadRequest("This name is already Exist");
+            return BadRequest("This name is taken please choose another name");
         }
-
     }
 }

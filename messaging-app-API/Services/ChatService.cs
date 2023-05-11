@@ -2,9 +2,7 @@
 {
     public class ChatService
     {
-        //key and value eg:{"altaf", "hey"}
         private static readonly Dictionary<string, string> Users = new Dictionary<string, string>();
-
         public bool AddUserToList(string userToAdd)
         {
             lock (Users)
@@ -13,15 +11,14 @@
                 {
                     if (user.Key.ToLower() == userToAdd.ToLower())
                     {
-                        return true;
+                        return false;
                     }
                 }
                 Users.Add(userToAdd, null);
                 return true;
             }
         }
-
-        public void AddUserConnectionId(string user, string connectionId)
+        public void AddUserConnectinId(string user, string connectionId)
         {
             lock (Users)
             {
@@ -31,14 +28,12 @@
                 }
             }
         }
-
-        public string GetUserConnectionId(string connectionId)
+        public string GetUserByConnectionId(string connectionId)
         {
-                lock (Users)
-                {
-                    return Users.Where(x => x.Value == connectionId).Select(x => x.Key).FirstOrDefault();
-                }
-
+            lock (Users)
+            {
+                return Users.Where(x => x.Value == connectionId).Select(x => x.Key).FirstOrDefault();
+            }
         }
         public string GetConnectionIdByUser(string user)
         {
@@ -46,12 +41,10 @@
             {
                 return Users.Where(x => x.Key == user).Select(x => x.Value).FirstOrDefault();
             }
-
         }
-
         public void RemoveUserFromList(string user)
         {
-            lock(Users)
+            lock (Users)
             {
                 if (Users.ContainsKey(user))
                 {

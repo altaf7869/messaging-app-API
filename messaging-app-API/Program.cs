@@ -53,10 +53,18 @@ builder.Services.AddCors(option =>
 {
     option.AddPolicy("mypolicy", builder =>
     {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:4200/");
     });
 });
-
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(builder =>
+//    {
+//        builder.WithOrigins("http://localhost:4200")
+//               .AllowAnyHeader()
+//               .AllowAnyMethod();
+//    });
+//});
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<ChatService>();
 
@@ -71,6 +79,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 app.UseCors("mypolicy");
