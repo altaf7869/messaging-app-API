@@ -14,7 +14,7 @@
              <p> Please tap the button below to choose a new password. </p>
     <a href = ""http://localhost:4200/reset?email={email}&code={emailToken}"" target = ""_blank"" > Reset Your password </a>
 <p>kind Regards <br><br>
-by Lily </p>
+by Altaf Ghori </p>
 </body>
 </html>";
         }

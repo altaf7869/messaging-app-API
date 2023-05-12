@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(option =>
 {
     option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
-        Description = "Standard Authorization header using Beare scheme(\"bearer {token}\")",
+        Description = "Standard Authorization header using Bearer scheme(\"bearer {token}\")",
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
@@ -53,14 +53,14 @@ builder.Services.AddCors(option =>
 {
     option.AddPolicy("mypolicy", builder =>
     {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:4200/");
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
 //builder.Services.AddCors(options =>
 //{
 //    options.AddDefaultPolicy(builder =>
 //    {
-//        builder.WithOrigins("http://localhost:4200")
+//        builder.WithOrigins("http://localhost:4200/")
 //               .AllowAnyHeader()
 //               .AllowAnyMethod();
 //    });
@@ -88,5 +88,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<ChatHub>("/hubs/chat");
+app.MapHub<ChatHub>("/hubs/Auth");
 app.Run();

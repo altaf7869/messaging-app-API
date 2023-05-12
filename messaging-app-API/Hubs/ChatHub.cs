@@ -63,7 +63,7 @@ namespace messaging_app_API.Hubs
             await Clients.Groups("Come2Chat").SendAsync("OnlineUsers", onlineUsers);
         }
         private string GetPrivateGroupName(string from, string to)
-        {
+        {  
             // from: john, to: david  "david-john"
             var stringCompare = string.CompareOrdinal(from, to) < 0;
             return stringCompare ? $"{from}-{to}" : $"{to}-{from}";

@@ -10,7 +10,6 @@ namespace messaging_app_API.Dto
         [Required]
         [MinLength(8, ErrorMessage = "The password must be at least 8 characters long.")]
         public string Password { get; set; }
-        [Required]
-        public string Name { get; set; }
+        
     }
 }

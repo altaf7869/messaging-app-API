@@ -55,7 +55,7 @@ namespace LegalGen.Controllers
             {
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
-              
+                Name = request.Name,
             
             };
             // Save the user to the database
