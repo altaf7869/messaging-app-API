@@ -48,7 +48,7 @@ namespace LegalGen.Controllers
             if (existingUser != null)
             {
                 // Return a response indicating that the email is already registered
-                return Conflict("Email is already registered.");
+                return BadRequest("Email is already registered.");
             }
 
             var user = new User
