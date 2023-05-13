@@ -18,8 +18,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //  inmemory database for testing 
-builder.Services.AddDbContext<Dbcontext>(option => option.UseInMemoryDatabase("UserDb"));
-//builder.Services.AddDbContext<Dbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ContactsApiConnectionString")));
+//builder.Services.AddDbContext<Dbcontext>(option => option.UseInMemoryDatabase("UserDb"));
+builder.Services.AddDbContext<Dbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
 
 builder.Services.AddSwaggerGen();
 
@@ -49,13 +49,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
-builder.Services.AddCors(option =>
-{
-    option.AddPolicy("mypolicy", builder =>
-    {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
-});
+builder.Services.AddCors();
 //builder.Services.AddCors(options =>
 //{
 //    options.AddDefaultPolicy(builder =>
@@ -82,11 +76,11 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-app.UseCors("mypolicy");
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200"));
 app.UseAuthorization();
 
 
 app.MapControllers();
 
-app.MapHub<ChatHub>("/hubs/Auth");
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();

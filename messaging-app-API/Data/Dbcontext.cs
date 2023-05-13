@@ -10,9 +10,12 @@ namespace messaging_app_API.Data
 
         }
         public DbSet<User> Users { get; set; }
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{ 
-        //}
+        public DbSet<Message> Messages { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Message>()
+        .HasNoKey();
+        }
     }
 
 }

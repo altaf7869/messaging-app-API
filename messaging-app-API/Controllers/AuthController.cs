@@ -23,7 +23,7 @@ namespace LegalGen.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ChatService _chatService;
-        public AuthController(Dbcontext dbcontext ,IConfiguration configuration,IEmailService emailService, ChatService chatService)
+        public AuthController(Dbcontext dbcontext, IConfiguration configuration, IEmailService emailService, ChatService chatService)
         {
             _dbcontext = dbcontext;
             _configuration = configuration;
@@ -41,7 +41,7 @@ namespace LegalGen.Controllers
         }
 
         //Api user Registration
-        [HttpPost("register")]   
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDto request)
         {
             var existingUser = await _dbcontext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
@@ -50,19 +50,19 @@ namespace LegalGen.Controllers
                 // Return a response indicating that the email is already registered
                 return Conflict("Email is already registered.");
             }
-            
+
             var user = new User
             {
                 Email = request.Email,
                 Password = PasswordHasher.HashPassword(request.Password),
                 Name = request.Name,
-            
+
             };
             // Save the user to the database
             _chatService.AddUserToList(request.Name);
             await _dbcontext.Users.AddAsync(user);
             await _dbcontext.SaveChangesAsync();
-           
+
             return Ok("Registration Successfull");
         }
 
@@ -84,7 +84,7 @@ namespace LegalGen.Controllers
             return Ok(new
             {
                 StatusCode = HttpStatusCode.OK,
-                 id=user.Id,
+                id = user.Id,
                 user.Token,
                 Message = "Login SucessFully"
             });
@@ -96,7 +96,6 @@ namespace LegalGen.Controllers
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email,user.Email),
-
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

@@ -2,7 +2,6 @@
 using messaging_app_API.Models;
 using messaging_app_API.Services;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.OpenApi.Validations;
 
 namespace messaging_app_API.Hubs
 {
