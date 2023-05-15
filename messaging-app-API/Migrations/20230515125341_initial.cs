@@ -13,13 +13,16 @@ namespace messaging_app_API.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    userId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MessageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    userId = table.Column<int>(type: "int", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_Messages", x => x.MessageId);
                 });
 
             migrationBuilder.CreateTable(

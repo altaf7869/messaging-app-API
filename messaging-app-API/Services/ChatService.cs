@@ -1,8 +1,14 @@
-﻿namespace messaging_app_API.Services
+﻿using messaging_app_API.Data;
+using messaging_app_API.Models;
+using System;
+
+namespace messaging_app_API.Services
 {
     public class ChatService
     {
         private static readonly Dictionary<string, string> Users = new Dictionary<string, string>();
+        private readonly Dbcontext _dbcontext;
+
         public bool AddUserToList(string userToAdd)
         {
             lock (Users)

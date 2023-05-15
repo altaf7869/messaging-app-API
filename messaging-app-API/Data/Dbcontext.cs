@@ -13,8 +13,7 @@ namespace messaging_app_API.Data
         public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Message>()
-        .HasNoKey();
+          
         }
     }
 

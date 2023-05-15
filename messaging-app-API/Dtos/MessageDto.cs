@@ -8,6 +8,6 @@ namespace messaging_app_API.Dtos
         public string From { get; set; }
         public string To { get; set; }
         [Required]
-        public string Content { get; set; }
+        public string Message { get; set; }
     }
 }

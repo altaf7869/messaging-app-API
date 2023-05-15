@@ -1,10 +1,16 @@
-﻿namespace messaging_app_API.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace messaging_app_API.Models
 {
     public class Message
     {
-        public string userId { get; set; }
-        public string type { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int MessageId { get; set; }
+        public int userId { get; set; }
+        public string? User { get; set; }
         public string message { get; set; }
-        public DateTime date { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

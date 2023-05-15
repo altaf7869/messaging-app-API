@@ -12,7 +12,7 @@ using messaging_app_API.Data;
 namespace messaging_app_API.Migrations
 {
     [DbContext(typeof(Dbcontext))]
-    [Migration("20230513083132_initial")]
+    [Migration("20230515125341_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,20 +26,26 @@ namespace messaging_app_API.Migrations
 
             modelBuilder.Entity("messaging_app_API.Models.Message", b =>
                 {
-                    b.Property<DateTime>("date")
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"), 1L, 1);
+
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("userId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("MessageId");
 
                     b.ToTable("Messages");
                 });

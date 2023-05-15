@@ -60,6 +60,7 @@ builder.Services.AddCors();
 //    });
 //});
 builder.Services.AddScoped<IEmailService, EmailService>();
+
 builder.Services.AddSingleton<ChatService>();
 
 builder.Services.AddSignalR();

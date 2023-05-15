@@ -2,34 +2,40 @@
 using messaging_app_API.Data;
 using messaging_app_API.Dto;
 using messaging_app_API.Helper;
+using messaging_app_API.Hubs;
 using messaging_app_API.Models;
 using messaging_app_API.Services;
 using messaging_app_API.UtilityServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace LegalGen.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly Dbcontext _dbcontext;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ChatService _chatService;
-        public AuthController(Dbcontext dbcontext, IConfiguration configuration, IEmailService emailService, ChatService chatService)
+        private readonly IHubContext<MessageHub> _hubContext;
+
+        public AuthController(Dbcontext dbcontext, IConfiguration configuration, IEmailService emailService,
+            ChatService chatService, IHubContext<MessageHub> hubContext)
         {
             _dbcontext = dbcontext;
             _configuration = configuration;
             _emailService = emailService;
             _chatService = chatService;
-
+            _hubContext = hubContext;
         }
 
         //getUser 
@@ -90,6 +96,37 @@ namespace LegalGen.Controllers
             });
         }
 
+        [HttpPost("sendMessage")]
+        //[Authorize]
+        public async Task<IActionResult> SendMessage(Message message)
+        {
+            // Set message timestamp and user
+            message.Timestamp = DateTime.UtcNow;
+            //message.User = User.Identity.Name;
+
+            // Add message to database
+            _dbcontext.Messages.Add(message);
+            await _dbcontext.SaveChangesAsync();
+
+            // Send message to all clients
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage",message.message, message.userId);
+
+            return Ok(new
+            {
+                StatusCode = HttpStatusCode.OK,
+                message
+            });
+        }
+
+        [HttpGet("ReceiveMessage")]
+        //[Authorize]
+        public async Task<IEnumerable<Message>> GetMessages()
+        {
+            // Retrieve all messages from database
+            return await _dbcontext.Messages.ToListAsync();
+        }
+
+       
         //create token 
         private string CreateToken(User user)
         {
